@@ -8,3 +8,18 @@
  * You might find the following stackoverflow answer useful for figuring out the syntax:
  * <https://stackoverflow.com/a/5700744>.
  */
+select rank() over (
+        order by coalesce(sum(amount), 0.00) desc
+	) as "rank", 
+	title, 
+	coalesce(sum(amount), 0.00) as "revenue",
+	sum(coalesce(sum(amount), 0.00)) over (
+		order by coalesce(sum(amount), 0.00) desc
+	) as "total revenue"
+from film
+left join inventory using (film_id)
+left join rental using (inventory_id)
+left join payment using (rental_id)
+group by title
+order by rank, title;
+

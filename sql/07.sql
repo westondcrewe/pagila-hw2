@@ -15,3 +15,19 @@
  * This is the last problem that will require you to use a particular method to solve the query.
  * In future problems, you may choose whether to use the LEFT JOIN or NOT IN clause if they are more applicable.
  */
+
+select title
+from film
+where film.film_id in (
+	select film_id 
+	from inventory)
+and film_id not in (
+	select distinct film_id from film
+	join inventory using (film_id)
+	join rental using (inventory_id)
+	join customer using (customer_id)
+	join address using (address_id)
+	join city using (city_id)
+	join country using (country_id)
+	where country = 'United States')
+order by title;
